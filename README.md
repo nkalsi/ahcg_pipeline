@@ -33,3 +33,4 @@ To access help use the following command:
 ```{sh}
 python3 ahcg_pipeline.py -h
 ```
+#Course : Applied Human Computational Genomics (BIOL8803F)
