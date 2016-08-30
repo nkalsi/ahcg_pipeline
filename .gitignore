@@ -2,3 +2,9 @@
 local
 fq
 #lib
+bowtie_index
+test_files
+out_dir
+resources
+
+
