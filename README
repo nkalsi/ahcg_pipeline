@@ -46,6 +46,19 @@ java -jar ./lib/picard.jar CreateSequenceDictionary R=./resources/genome/hg19.fa
 
 python3 ./ahcg_pipeline.py -t /home/vagrant/nkalsi/ahcg_pipeline/lib/Trimmomatic-0.36/trimmomatic-0.36.jar -b /home/vagrant/nkalsi/ahcg_pipeline/lib/bowtie2-2.2.9/bowtie2 -p /home/vagrant/nkalsi/ahcg_pipeline/lib/picard.jar -g /home/vagrant/nkalsi/ahcg_pipeline/lib/GenomeAnalysisTK.jar -i /home/vagrant/nkalsi/ahcg_pipeline/test*.fastq -w /home/vagrant/nkalsi/ahcg_pipeline/hg19 -d /home/vagrant/nkalsi/ahcg_pipeline/resources/dbsnp/dbsnp_138.hg19.vcf -r /home/vagrant/nkalsi/ahcg_pipeline/resources/genome/hg19.fa -a /home/vagrant/nkalsi/ahcg_pipeline/lib/Trimmomatic-0.36/adapters/TruSeq2-PE.fa -o out_dir 
 
+#change the remote url for the GIT repository 
+vi .git/config
+#change the URL to the personal github account link and save the file
 
+#Pushing files to github
+git add README
+git commit -m "readme"
+git push -u origin master
 
+#Adding stuff to .gitignore
+vi .gitignore
+#enter the directory name in .gitignore,then 
+git add .gitignore
+git commit -m "updated"
+git push origin master
 
