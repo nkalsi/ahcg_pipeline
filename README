@@ -62,3 +62,31 @@ git add .gitignore
 git commit -m "updated"
 git push origin master
 
+#downloaded genomic coordinate file from tsquare.
+wget http://vannberg.biology.gatech.edu/data/ahcg2016/reference_genome/hg19_refGene.txt
+
+#extract the six BRCA1 entries from the file 
+grep 'BRCA1' hg19_refGene.txt > BRCA1.txt
+
+#
+grep 'NM_007294' BRCA1.txt > BRCA1.txt
+
+#getting start coordinates and printing them in a column 
+cut -f10 -d$'\t' BRCA1.txt | cut -d',' --output-delimiter=$'\n' -f1- > start.txt
+#getting end coordinates and printing them in a column 
+cut -f11 -d$'\t' BRCA1.txt | cut -d',' --output-delimiter=$'\n' -f1- > end.txt
+#printing other columns 
+printf 'chr17\n%.0s' {1..23} > chr.txt
+printf 'NM_007924\n%.0s' {1..23} > id.txt
+printf 'NA\n%.0s' {1..23} > score.txt
+printf '\t-\n%.0s' {1..23} > strand.txt 
+#printing strand gave an error so i added a tab infront of it , then i paste the score and strand without any delimiter, so the the tab i added to the strand would automatically act as the delimiter.
+#printing 4th and 5th columns without a delimiter
+paste -d '' score.txt strand.txt > score+strand.txt
+#printing all columns together to form a bed file 
+paste chr.txt start.txt end.txt id.txt score+strand.txt > BRCA1.bed
+
+#updating a file in the github
+git add README
+git commit -m "updated"
+git push origin master
