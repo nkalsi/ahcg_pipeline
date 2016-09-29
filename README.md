@@ -124,37 +124,45 @@ Converting to bed file
 ```{sh}
 ./convert_to_bed.sh BRCA1.txt BRCA1.bed
 ```
+
+
+Verifying the variant calls from the pipeline with the GIAB variant calls for NA12878:
+
+1. Generating a bed file containing the coordinates (exonic level) for all the genes from color genomics and otogenetics, breast and ovarian cancer panel
+The gene list can be found in br_ov/gene_list.txt
+Getting all nmids from the breast and ovarian cancer gene list.
 ```{sh}
-gene	ncbi reference	OMIM
-BRCA1	NM_007298.3	113705
-BRCA2	NM_000059.3	600185
-MLH1	NM_000249.3	120436
-MSH2	NM_000251.2	609309
-MSH6	NM_000179.2	600678
-PMS2	NM_000535.5  	600259
-EPCAM	NM_002354.2	185535
-TP53	NM_000546.5	191170
-PTEN	NM_000314.4  	601728
-STK11	NM_000455.4	602216
-CDH1	NM_004360.3	192090
-PALB2	NM_024675.3	610355
-CHEK2	NM_001005735.1	604373
-ATM	NM_000051.3	607585
-NBN	NM_002485.4	602667
-BARD1	NM_000465.3	601593
-BRIP1	NM_032043.2	605882
-RAD51C	NM_002876.3	602774
-RAD51D	NM_001142571.1	602954
-AR	NM_000044.3	313700
-CASP8	NM_001080124.1	601763
-CHEK2 	NM_001005735.1	604373
-DIRAS3	NM_004675.2	605193
-ERBB2	NM_001005862.1	164870
-PALB2	NM_024675.3	601355
-RAD50	NM_005732.3	604040
-RAD51A	NM_001164269.1	179617  
-TGFB1	NM_000660.4	190180
+awk '{print "\\<" $2 "\\>" }' breastcancer_genes.txt > genelist.txt
 ```
+Getting all nmids from the breast and ovarian cancer gene list.
+```{sh}
+grep -f gene_nmids.txt hg19_refGene.txt > genes_bed.txt
+```
+Converting to bed file and adding 20 bp flanks on both ends.
+```{sh}
+./bedconverter.py -i genes_bed.txt -o ovbr.bed
+```
+Remove the last 4 lines for the PMS2 gene from the BED file, since exons 12-15 aren't analyzed.
+
+2.Extract variants from your vcf files, falling within the regions listed in the bed file for breast and ovarian cancer panel.
+```{sh}
+bedtools intersect -header -a giab-with_chr.vcf -b ov_br.bed > giab-vcf_intersect.vcf
+```
+
+3. Determine the number of overlapping calls with GIAB variant calls for NA12878.
+The GIAB vcf file has a different chromosomal notation.
+```{sh}
+awk '{if($0 !~ /^#/) print "chr"$0; else print $0}' no_chr.vcf > with_chr.vcf 
+```
+Extract variants from the GIAB vcf file that fall within the regions listed in the bed file for breast and ovarian cancer panel.
+```{sh}
+bedtools intersect -header -a giab-with_chr.vcf -b ov_br.bed > giab-vcf_intersect.vcf
+```
+Calculating the number of overlaps
+```{sh}
+bedtools intersect -header -a giab-vcf_intersect.vcf -b vcf_intersect.vcf > final-output.vcf
+```
+
 
 
 #Course : Applied Human Computational Genomics (BIOL8803F)
