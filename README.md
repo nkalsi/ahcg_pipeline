@@ -162,7 +162,55 @@ Calculating the number of overlaps
 ```{sh}
 bedtools intersect -header -a giab-vcf_intersect.vcf -b vcf_intersect.vcf > final-output.vcf
 ```
+VARIANT RECALIBRATOR
+Download the bundle files:
+```{sh}
+ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/2.8/hg19/hapmap_3.3.hg19.sites.vcf.idx.gz
+ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/2.8/hg19/1000G_omni2.5.hg19.sites.vcf.gz
+ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/2.8/hg19/1000G_phase1.snps.high_confidence.hg19.sites.vcf.gz
+```
+Run the Variant Recalibrator
+```{sh}
+java -Xmx4g -jar ./lib/GenomeAnalysisTK.jar \
+-T VariantRecalibrator \
+-R ./resources/genome/hg19.fa \
+-input ./oct_4/variants.vcf \
+-resource:hapmap,known=false,training=true,truth=true,prior=15.0 ./oct_4/hapmap_3.3.hg19.sites.vcf.gz \
+-resource:omni,known=false,training=true,truth=false,prior=12.0 ./oct_4/1000G_omni2.5.hg19.sites.vcf.gz \
+-resource:1000G,known=false,training=true,truth=false,prior=10.0 ./oct_4/1000G_phase1.snps.high_confidence.hg19.sites.vcf.gz \
+-resource:dbsnp,known=true,training=false,truth=false,prior=2.0 ./resources/dbsnp/dbsnp_138.hg19.vcf \
+-an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR \
+-mode SNP -recalFile output.recal -tranchesFile output.tranches -rscriptFile output.plots.R
+```
 
+Run GATK to get vcf file 
+```{sh}
+java -jar ./lib/GenomeAnalysisTK.jar \ 
+    -T ApplyRecalibration \ 
+    -R ./path/to/reference.fa \ 
+    -input ./path/to/raw_variants.vcf \ 
+    -mode SNP \ 
+    --ts_filter_level 99.0 \ 
+    -recalFile recalibrate_SNP.recal \ 
+    -tranchesFile recalibrate_SNP.tranches \ 
+    -o recalibrated_snps_raw_indels.vcf
+```
 
+Comparing results to the clinical variants
+```{sh}
+python compare_clin_with_vcf.py ../NA12878_variants.vcf ../BRCA1_brca_exchange_variants.csv BRCA2_brca_exchange_variants.csv > brca_clinical_xref.txt
+#Converting to BED file 
+cat brca_clinical_xref.txt | awk 'BEGIN {FS="\t"} {split($1, coord, ":") ;printf ("%s\t%s\t%s\t%s\n", coord[1], coord[2], coord[2], $2)}' | sed -E -e 's/^([^c].*)/chr\1/' > brca_clinical_xref.bed
+```
+Calculating coverage : 
+```{sh}
+samtools view -L brca1.bed data/project.NIST_NIST7035_H7AP8ADXX_TAAGGCGA_1_NA12878.bwa.markDuplicates.bam -b > new.bam
+bedtools genomecov -ibam new.bam -bga na12878.bga.bed
+bedtools intersect -split -a brca1.bed -b na12878.bga.bed -bed > brca1.coverage_joined.bed
+```
+Generating a clinical report : 
+```{sh}
+bedtools intersect -a brca1.final.bed -b brca_clinical_xref.bed -wo > brca_clinical_final.bed
+cat brca_clinical_final.bed | cut -f4,5,7,8,10 > final_brca_report.bed
+```
 
-#Course : Applied Human Computational Genomics (BIOL8803F)
