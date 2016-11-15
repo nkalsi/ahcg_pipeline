@@ -214,3 +214,13 @@ bedtools intersect -a brca1.final.bed -b brca_clinical_xref.bed -wo > brca_clini
 cat brca_clinical_final.bed | cut -f4,5,7,8,10 > final_brca_report.bed
 ```
 
+
+DCM genes : 
+
+DSP : NM_004415
+LMNA : NM_170707
+MYBPC3 : NM_000256
+MYH7 : NM_000257
+MYH6 : NM_002471
+SCN5A : NM_198056
+TNNT2 : NM_001001430
