@@ -215,9 +215,7 @@ cat brca_clinical_final.bed | cut -f4,5,7,8,10 > final_brca_report.bed
 ```
 
 
-DCM genes - 
-
-DSP : NM_004415
+## DCM genes - 
 
 LMNA : NM_170707
 
