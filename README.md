@@ -232,9 +232,9 @@ TNNT2 : NM_001001430
 
 |Disease|Gene|Nmid|Variant-c|Variant-p|rsid|coordinates-hg38 (variant)|coordinates-hg37 (variant)|type|
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|DCM|LMNA|NM_170707.3|c.961C>T|p.Arg321Ter|rs267607554|chr1 : 156135925| chr1 : 156105716 |nonsense|
-|DCM|LMNA|NM_170707.4|c.149G>C|p.Arg50Pro|rs60695352|chr1 : 156115067| chr1 : |missense|
-|DCM|LMNA|NM_170707.5|c178C>G|p.Arg60Gly|rs28928900|chr1 : 156115096|missense|
+|DCM|LMNA|NM_170707.3|c.961C>T|p.Arg321Ter|rs267607554|chr1:156135925|chr1:156105716|nonsense|
+|DCM|LMNA|NM_170707.4|c.149G>C|p.Arg50Pro|rs60695352|chr1:156115067|chr1:156084858 | missense|
+|DCM|LMNA|NM_170707.5|c178C>G|p.Arg60Gly|rs28928900|chr1:156115096|chr1:156084887||missense|
 |DCM|MYBPC3|NM_000256|-|-|-|-|-|					
 |DCM|MYH7|NM_000257|-|-|-|-|-|				
 |DCM|MYH6|NM_002471|-|-|-|-|-|				
