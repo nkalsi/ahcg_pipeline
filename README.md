@@ -241,7 +241,9 @@ TNNT2 : NM_001001430
 |DCM|SCN5A|NM_198056.2|c.5872C>T|p.Arg1958Ter|rs757532106|chr3:38550500|chr3:38591991|nonsense|
 |DCM|TNNT2|NM_001001430.2|c.629_631delAGA|p.Lys210del|rs121964859|201361971:201361973|201331100:201331102|deletion|
 
-pipeline_variantCaller.sh : final pipeline to  run variant calling, calculate depth and generate a report for user-specified genes
+
+
+## pipeline_variantCaller.sh : final pipeline to  run variant calling, calculate depth and generate a report for user-specified genes
 ```{sh}
 Usage : Usage : ./pipeline_variantCaller.sh <input.bam> <gene_list.bed> <clinvar_file> <output_directoy_name>
 
