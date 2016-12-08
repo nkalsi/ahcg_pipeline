@@ -240,3 +240,51 @@ TNNT2 : NM_001001430
 |DCM|MYH6|NM_002471|-|-|-|-|-|				
 |DCM|SCN5A|NM_198056.2|c.5872C>T|p.Arg1958Ter|rs757532106|chr3:38550500|chr3:38591991|nonsense|
 |DCM|TNNT2|NM_001001430.2|c.629_631delAGA|p.Lys210del|rs121964859|201361971:201361973|201331100:201331102|deletion|
+
+pipeline_variantCaller.sh : final pipeline to  run variant calling, calculate depth and generate a report for user-specified genes
+```{sh}
+Usage : Usage : ./pipeline_variantCaller.sh <input.bam> <gene_list.bed> <clinvar_file> <output_directoy_name>
+
+Example : time ./pipeline_variantCaller.sh Patient1_RG_MD_IR_BQ.bam ./dcm_gene_list.bed ./clinvar.vcf.gz output_directory
+
+REQUIREMENTS:
+1. Python v2.7.3
+2. R v3.2.5
+3. GATK v3.4-46
+4. bedtools v2.25.0
+6. samtools v0.1.18
+7. convert (ImageMagick)
+8. pandoc
+9. latex
+10. pdftk
+
+Additional Scripts used : cov.py, parse_clnsig.py, draw_script.R
+
+Outline of the wrapper script
+-> Variant calling using GATK HaplotypeCaller
+-> Variant recalibration using GATK VariantRecalibrator
+-> GATK ApplyRecalibrator
+-> Calculating depth of coverage for each gene
+-> Plotting graphs for depth of coverage
+-> Cross-referencing with ClinVar data
+-> Merging of results to get the final report
+
+Downloads :
+-> Reference genome can be downloaded from http://support.illumina.com/sequencing/sequencing_software/igenome.html
+-> Variant Recalibrator bundle files :
+        ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/2.8/hg19/hapmap_3.3.hg19.sites.vcf.idx.gz
+        ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/2.8/hg19/1000G_omni2.5.hg19.sites.vcf.gz
+        ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/2.8/hg19/1000G_phase1.snps.high_confidence.hg19.sites.vcf.gz
+
+-> Clinvar file for hg19 :
+        ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh37/clinvar.vcf.gz
+
+Creating gene_list.bed :
+        awk '{print "\\<" $2 "\\>" }' dcm_genes.txt > genelist.txt
+        grep -f gene_nmids.txt hg19_refGene.txt > genes_bed.txt
+        ./bedconverter.py -i genes_bed.txt -o dcm_gene_list.bed
+
+Command to add "chr" to clinvar entires
+        awk '{if($0 !~ /^#/) print "chr"$0; else print $0}' clivar.vcf.gz
+```
+
