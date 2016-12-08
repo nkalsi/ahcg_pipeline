@@ -1,15 +1,9 @@
-##Pipeline to run variant calling, calculate depth and generate a report for user-specified genes
+Pipeline to run variant calling, calculate depth and generate a report for user-specified genes
 
-###Usage : 
-```{sh}
-./pipeline_variantCaller.sh <input.bam> <gene_list.bed> <clinvar_file> <output_directoy_name>
-```
-###Example : 
-```{sh}
-time ./pipeline_variantCaller.sh Patient1_RG_MD_IR_BQ.bam ./dcm_gene_list.bed ./clinvar.vcf.gz output_directory
-```
+Usage : ./pipeline_variantCaller.sh <input.bam> <gene_list.bed> <clinvar_file> <output_directoy_name>
+Example : time ./pipeline_variantCaller.sh Patient1_RG_MD_IR_BQ.bam ./dcm_gene_list.bed ./clinvar.vcf.gz output_directory
 
-###REQUIREMENTS:
+REQUIREMENTS:
 1. Python v2.7.3
 2. R v3.2.5
 3. GATK v3.4-46
@@ -41,11 +35,10 @@ Downloads :
         ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh37/clinvar.vcf.gz
 
 Creating gene_list.bed :
-```{sh}
         awk '{print "\\<" $2 "\\>" }' dcm_genes.txt > genelist.txt
         grep -f gene_nmids.txt hg19_refGene.txt > genes_bed.txt
         ./bedconverter.py -i genes_bed.txt -o dcm_gene_list.bed
-```{sh}
+
 
 Command to add "chr" to clinvar entires
         awk '{if($0 !~ /^#/) print "chr"$0; else print $0}' clivar.vcf.gz
